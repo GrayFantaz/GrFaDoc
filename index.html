@@ -68,7 +68,6 @@
             font-weight: 600;
         }
 
-        /* Основной контент */
         main {
             flex: 1;
             padding: 40px 60px;
@@ -80,6 +79,56 @@
             max-width: 800px;
             margin: 0 auto;
         }
+		
+		.category-header {
+			font-size: 0.9rem;
+			text-transform: uppercase;
+			font-weight: 700;
+			color: #495057;
+			margin-top: 15px;
+			margin-bottom: 5px;
+			cursor: pointer;
+			user-select: none;
+		}
+
+		.category-header:hover, .subcategory-header:hover {
+			color: var(--link-color);
+		}
+
+		.subcategory-list {
+			display: none; 
+			padding-left: 10px;
+			border-left: 2px solid var(--border-color);
+			margin-left: 5px;
+		}
+	
+		.subcategory-header {
+			font-size: 0.85rem;
+			font-weight: 600;
+			color: #6c757d;
+			margin-top: 10px;
+			margin-bottom: 5px;
+			cursor: pointer;
+			user-select: none;
+		}
+
+		.article-list {
+			display: none;
+			padding-left: 15px;
+		}
+
+		.expanded {
+			display: block !important;
+		}
+
+		.toggle-icon {
+			display: inline-block;
+			width: 15px;
+			transition: transform 0.2s;
+		}
+		.expanded-icon {
+			transform: rotate(90deg);
+		}
 
         h1 { font-size: 2.5rem; margin-top: 0; }
         h2 { border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-top: 40px; }
@@ -106,52 +155,88 @@
 
     <script src="data.js"></script>
 
-	<script>
-		const sidebarNav = document.getElementById('sidebar-nav');
-		const docTitle = document.getElementById('doc-title');
-		const docContent = document.getElementById('doc-content');
+<script>
+	const sidebarNav = document.getElementById('sidebar-nav');
+	const docTitle = document.getElementById('doc-title');
+	const docContent = document.getElementById('doc-content');
 
-		function renderSidebar() {
-			const grouped = {};
-			articles.forEach(article => {
-				if (!grouped[article.category]) {
-					grouped[article.category] = [];
-				}
-				grouped[article.category].push(article);
-			});
+	function renderSidebar() {
+		const hierarchy = {};
 
-			let html = '';
-			for (const category in grouped) {
-				html += `<div class="category">${category}</div>`;
-				grouped[category].forEach(article => {
-					html += `<a class="nav-link" data-id="${article.id}">${article.title}</a>`;
+		articles.forEach(article => {
+			const cat = article.category || 'Без категории';
+			const subcat = article.subcategory || 'Общее';
+
+			if (!hierarchy[cat]) hierarchy[cat] = {};
+			if (!hierarchy[cat][subcat]) hierarchy[cat][subcat] = [];
+
+			hierarchy[cat][subcat].push(article);
+		});
+
+		let html = '';
+		for (const cat in hierarchy) {
+			html += `
+				<div class="category-group">
+					<div class="category-header" onclick="toggleVisibility(this)">
+						<span class="toggle-icon">▶</span> ${cat}
+					</div>
+					<div class="subcategory-list">
+			`;
+
+			for (const subcat in hierarchy[cat]) {
+				html += `
+					<div class="subcategory-group">
+						<div class="subcategory-header" onclick="toggleVisibility(this)">
+							<span class="toggle-icon">▶</span> ${subcat}
+						</div>
+						<div class="article-list">
+				`;
+
+				hierarchy[cat][subcat].forEach(article => {
+					html += `<a class="nav-link" data-id="${article.id}" onclick="handleArticleClick(event, '${article.id}')">${article.title}</a>`;
 				});
+
+				html += `</div></div>`; 
 			}
-			sidebarNav.innerHTML = html;
-
-			document.querySelectorAll('.nav-link').forEach(link => {
-				link.addEventListener('click', (e) => {
-					const id = e.target.getAttribute('data-id');
-					loadArticle(id);
-				});
-			});
+			html += `</div></div>`; 
 		}
+    
+		sidebarNav.innerHTML = html;
+	}
 
-		function loadArticle(id) {
-			const article = articles.find(a => a.id === id);
-			if (article) {
-				docTitle.innerHTML = article.title;
-				docContent.innerHTML = article.content;
-
-				document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-				const activeLink = document.querySelector(`.nav-link[data-id="${id}"]`);
-				if (activeLink) activeLink.classList.add('active');
-			}
+	window.toggleVisibility = function(element) {
+		const nextElement = element.nextElementSibling;
+		const icon = element.querySelector('.toggle-icon');
+    
+		if (nextElement) {
+			nextElement.classList.toggle('expanded');
 		}
+		if (icon) {
+			icon.classList.toggle('expanded-icon');
+		}
+	};
 
+	window.handleArticleClick = function(event, id) {
+		loadArticle(id);
+	}
 
-		renderSidebar();
-		loadArticle('intro');
+	function loadArticle(id) {
+		const article = articles.find(a => a.id === id);
+		if (article) {
+			docTitle.innerHTML = article.title;
+			docContent.innerHTML = article.content;
+
+			document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+			const activeLink = document.querySelector(`.nav-link[data-id="${id}"]`);
+			if (activeLink) activeLink.classList.add('active');
+		} else {
+			docTitle.innerHTML = "Статья не найдена";
+			docContent.innerHTML = "<p>Выберите статью из меню слева.</p>";
+		}
+	}
+
+	renderSidebar();
+	loadArticle('firstact'); 
 	</script>
 </body>
 </html>
