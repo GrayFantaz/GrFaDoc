@@ -6,11 +6,11 @@
     <title>Серый Фэнтези</title>
     <style>
         :root {
-            --bg-color: #ffffff;
-            --sidebar-bg: #f8f9fa;
-            --text-color: #333333;
-            --link-color: #0056b3;
-            --link-hover: #003d82;
+            --bg-color: #141414;
+            --sidebar-bg: #1A1110;
+            --text-color: #EBEBEB;
+            --link-color: #DAA520;
+            --link-hover: #C79D33;
             --border-color: #e9ecef;
         }
 
@@ -84,7 +84,7 @@
 			font-size: 0.9rem;
 			text-transform: uppercase;
 			font-weight: 700;
-			color: #495057;
+			color: #bcbcbc;
 			margin-top: 15px;
 			margin-bottom: 5px;
 			cursor: pointer;
@@ -105,7 +105,7 @@
 		.subcategory-header {
 			font-size: 0.85rem;
 			font-weight: 600;
-			color: #6c757d;
+			color: #F5F3EF;
 			margin-top: 10px;
 			margin-bottom: 5px;
 			cursor: pointer;
@@ -129,6 +129,67 @@
 		.expanded-icon {
 			transform: rotate(90deg);
 		}
+		.geo-container {
+            display: flex;
+            flex-wrap: wrap; 
+            justify-content: center;
+            gap: 20px; 
+            margin-top: 30px;
+            width: 100%;
+        }
+
+        .geo-text-block {
+            flex: 1 1 300px;
+            min-height: auto;
+        }
+
+        .geo-image-block {
+            flex: 1 1 250px; 
+            display: flex;
+            justify-content: center;
+        }
+
+        .geo-image-block img {
+            width: 100%;
+            max-width: 300px;
+            height: auto; 
+            object-fit: cover;
+            border-radius: 6px;
+            transition: opacity 0.3s ease;
+        }
+
+        .geo-buttons-block {
+            flex: 0 1 180px; 
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .geo-btn {
+            background: transparent;
+            color: var(--text-color);
+            border: none;
+            padding: 6px 0;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 1rem;
+            text-align: left;
+            transition: color 0.2s;
+        }
+
+        .geo-btn:hover {
+            color: var(--link-hover);
+            text-decoration: underline;
+        }
+
+        .geo-btn.active {
+            color: var(--link-color);
+            font-weight: 600;
+        }
+
+        .fade-out {
+            opacity: 0;
+        }
 
         h1 { font-size: 2.5rem; margin-top: 0; }
         h2 { border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-top: 40px; }
@@ -237,6 +298,64 @@
 
 	renderSidebar();
 	loadArticle('firstact'); 
+	
+	const geoData = {
+		plan: {
+			title: "Планета",
+			desc: `<ul><li>Размер планеты: 14 000 КМ в диаметре. Экваториальная окружность 43 900 КМ.</li><li>Вращение: 26 часов</li><li>Ось наклона: 23 градуса.</li><li>Крупные материковые острова, с горами и равнинами.</li><li>70% поверхности планеты, заняты океанами.</li></ul>`,
+			img: "https://i.ibb.co/0ymCB4PV/2.png"
+		},
+		equat: {
+			title: "Экваториальная зона",
+			desc: `<ul><li>Экваториальная зона: 10 градусов от экватора.</li><li>Температура: 30 градусов постоянная.</li><li>Осадки: 3000 ММ в год.</li><li>Ландшафт: Пышные джунгли, реки, широкие озёра, болотные области. Плоские равнины.</li><li>Жители: Эльфы, Орки, Гноллы.</li></ul>`,
+			img: "https://i.ibb.co/bRC9ksP9/3.png"
+		},
+		subtrop: {
+			title: "Субтропический пояс",
+			desc: `<ul><li>Субтропический пояс: 25 градусов от экватора.</li><li>Температура: 22-28 градусов.</li><li>Осадки: 1500 ММ в год.</li><li>Ландшафт: Острова с умеренной растительностью, холмистые цепи гор.</li><li>Жители: Орки, Гноллы, Люди, Дворфы.</li></ul>`,
+			img: "https://i.ibb.co/wZfDH3g6/4.png"
+		},
+		norm: {
+			title: "Умеренный пояс",
+			desc: `<ul><li>Умеренный пояс: 45 градусов от экватора.</li><li>Температура: 12-22 градусов.</li><li>Осадки: 1000 ММ в год.</li><li>Ландшафт: Леса, плодородные равнины, горные цепи, с лесными и травяными зонами.</li><li>Жители: Люди, Дворфы, Орки, Гноллы.</li></ul>`,
+			img: "https://i.ibb.co/qYL8Ky1f/5.png"
+		},
+		subpol: {
+			title: "Субполярный пояс",
+			desc: `<ul><li>Субполярный пояс: 60 градусов от экватора.</li><li>Температура: 2-12 градусов.</li><li>Осадки: 1200 ММ в год.</li><li>Ландшафт: Сосновые и лиственные леса. Холмы и низкие горы. </li><li>Жители: Дворфы, Люди, Орки.</li></ul>`,
+			img: "https://i.ibb.co/RkRmKtPb/6.png"
+		},
+		pol: {
+			title: "Полярная зона",
+			desc: `<ul><li>Полярная зона: 90 градусов.</li><li>Температура: -10-5 градусов.</li><li>Осадки: 500 ММ в год.</li><li>Ландшафт: Тундра, редкая растительность, озёра, горы.</li><li>Жители: Дворфы, Гномы, Эльфы, Люди.</li></ul>`,
+			img: "https://i.ibb.co/60wJHxqQ/7.png"
+		}
+	};
+
+	window.changeGeo = function(regionId, btnElement) {
+		const data = geoData[regionId];
+		if (!data) return;
+
+		const textBlock = document.getElementById('geo-text');
+		const img = document.getElementById('geo-img');
+		const title = document.getElementById('geo-title');
+		const desc = document.getElementById('geo-desc');
+
+		document.querySelectorAll('.geo-btn').forEach(b => b.classList.remove('active'));
+		if (btnElement) btnElement.classList.add('active');
+
+		textBlock.classList.add('fade-out');
+		img.style.opacity = '0';
+
+		setTimeout(() => {
+			title.innerText = data.title;
+			desc.innerHTML = data.desc;
+			img.src = data.img;
+
+			textBlock.classList.remove('fade-out');
+			img.style.opacity = '1';
+		}, 300);
+	};
 	</script>
 </body>
 </html>
